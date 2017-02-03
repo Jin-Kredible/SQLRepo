@@ -12,7 +12,8 @@ select employee_id, to_char(hire_date, 'yyyy"년"/mm"월"/dd"일" dy"요일" ddd
 
 select employee_id, to_char(salary, '99999') from employees;
 
-select employee_id, to_char(salary, 'FML999,999') from employees;
+select employee_id, to_char(salary, 'FM999,999') from employees;
+
 
 select to_char(3.134343545, '9.999') from dual;
 
