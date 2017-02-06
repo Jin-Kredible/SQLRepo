@@ -33,7 +33,8 @@ ORDER BY AVG (salary) DESC;
 
 --5번 문제
 
-SELECT employees.hire_date
+SELECT employee_id AS "회사원 번호",
+       TO_CHAR (employees.hire_date, 'yyyy/mm/dd') AS "입사일"
   FROM employees
  WHERE employee_id =
           (SELECT employee_id
@@ -43,15 +44,51 @@ SELECT employees.hire_date
                    ORDER BY SUM (j.END_DATE - j.START_DATE) DESC)
             WHERE ROWNUM = 1);
 
+
+SELECT employees.hire_date
+  FROM employees
+ WHERE employees.employee_id =
+          (SELECT *
+             FROM (  SELECT e.employee_id
+                       FROM employees e, job_history j
+                      WHERE e.employee_id = j.EMPLOYEE_ID
+                   GROUP BY j.employee_id
+                   ORDER BY MAX (j.end_date - j.start_date) DESC)
+            WHERE ROWNUM = 1);
+
+SELECT employees.hire_date
+  FROM employees
+ WHERE employees.employee_id =
+          (SELECT *
+             FROM (  SELECT e.employee_id
+                       FROM employees e, job_history j
+                      WHERE e.employee_id = j.EMPLOYEE_ID
+                   GROUP BY j.employee_id
+                   ORDER BY MAX (j.end_date - j.start_date) DESC)
+            WHERE ROWNUM = 1);
+
+
 --6번 문제
 
-select department_id, avg(salary), min(salary), avg(salary)-min(salary) from employees having 
-avg(salary)-min(salary)<2000 group by department_id order by avg(salary)-min(salary) desc;
+  SELECT department_id,
+         AVG (salary),
+         MIN (salary),
+         AVG (salary) - MIN (salary)
+    FROM employees
+  HAVING AVG (salary) - MIN (salary) < 2000
+GROUP BY department_id
+ORDER BY AVG (salary) - MIN (salary) DESC;
 
 --7번 문제
 
-select job_title, sum(max_salary-min_salary) from jobs group by job_title;
+  SELECT job_title AS "직위", SUM (max_salary - min_salary) AS "임금차액"
+    FROM jobs
+GROUP BY job_title;
 
-	select * from (select job_title, sum(max_salary-min_salary) from jobs 
-	group by job_title order by sum(max_salary-min_salary) desc) where rownum=1;
-
+SELECT *
+  FROM (  SELECT job_title AS "직위",
+                 SUM (max_salary - min_salary) AS "최고 임금차액"
+            FROM jobs
+        GROUP BY job_title
+        ORDER BY SUM (max_salary - min_salary) DESC)
+ WHERE ROWNUM = 1;
